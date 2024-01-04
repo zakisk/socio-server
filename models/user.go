@@ -31,10 +31,10 @@ type User struct {
 	Occupation string `json:"occupation" form:"occupation"`
 
 	// likes on post
-	ViewedProfile int `json:"viewedProfile" form:"viewedProfile" binding:"gt=0"`
+	ViewedProfile int `json:"viewedProfile" form:"viewedProfile"`
 
 	// comments on post
-	Impressions int `json:"impressions" form:"impressions" binding:"gt=0"`
+	Impressions int `json:"impressions" form:"impressions"`
 
 	// the time post is created
 	CreatedAt time.Time `json:"createdAt" form:"createdAt"`
