@@ -28,10 +28,10 @@ type Post struct {
 	UserPicturePath string `json:"userPicturePath" form:"userPicturePath"`
 
 	// likes on post
-	Likes map[string]bool `json:"likes" form:"likes"`
+	Likes map[string]bool `json:"likes" form:"likes" gorm:"type:json"`
 
 	// comments on post
-	Comments []string `json:"comments" form:"comments"`
+	Comments []string `json:"comments" form:"comments" gorm:"type:varchar(255)[]"`
 
 	// the time post is created
 	CreatedAt time.Time `json:"createdAt" form:"createdAt"`

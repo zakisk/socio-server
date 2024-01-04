@@ -14,9 +14,14 @@ func (h *Handler) RegisterUser(c *gin.Context) {
 		return
 	}
 
-	h.log.Info().Interface("User", user).Msg("got this values")
+	if err := h.dbHandler.InsertUser(&user); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, &user)
 }
 
 func (h *Handler) LoginUser(c *gin.Context) {
-
+	
 }

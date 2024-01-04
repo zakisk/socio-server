@@ -13,7 +13,7 @@ type User struct {
 	LastName string `json:"lastName" form:"lastName" binding:"required"`
 
 	// email of user
-	Email string `json:"email" form:"email" binding:"required,email"`
+	Email string `json:"email" form:"email" binding:"required,email,unique"`
 
 	// profile password
 	Password string `json:"password" form:"password"`
@@ -22,7 +22,7 @@ type User struct {
 	PicturePath string `json:"picturePath" form:"picturePath"`
 
 	// friends of user
-	Friends []string `json:"friends"`
+	Friends []string `json:"friends" gorm:"type:varchar(255)[]"`
 
 	// location of user
 	Location string `json:"location" form:"location"`

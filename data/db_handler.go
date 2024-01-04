@@ -6,14 +6,18 @@ import (
 )
 
 type DBHandler struct {
-	DB *gorm.DB
+	db *gorm.DB
 }
 
 func NewDBHandler(db *gorm.DB) *DBHandler {
 	db.AutoMigrate(models.User{}, models.Post{})
-	return &DBHandler{DB: db}
+	return &DBHandler{db: db}
 }
 
 func (d *DBHandler) InsertUser(user *models.User) error {
-	return d.DB.Create(user).Error
+	return d.db.Create(user).Error
+}
+
+func (d *DBHandler) GetUser() {
+
 }
