@@ -28,3 +28,7 @@ func (d *DBHandler) GetUserByCondition(key, value string) (*models.User, error) 
 	}
 	return &user, nil
 }
+
+func (d *DBHandler) UpdateUser(user *models.User) error {
+	return d.db.Save(user).Error
+}
