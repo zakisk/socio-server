@@ -34,12 +34,12 @@ func main() {
 	}
 
 	dbHandler := data.NewDBHandler(db)
-	handler := handlers.NewHandlerInstance(log, dbHandler)
+	handlerInstance := handlers.NewHandlerInstance(log, dbHandler)
 
-	server := router.NewRouter(handler)
+	router := router.NewRouter(handlerInstance)
 
 	go func() {
-		err = server.S.Run(":3001")
+		err = router.S.Run(":3001")
 		if err != nil {
 			log.Fatal().Msg(err.Error())
 		}

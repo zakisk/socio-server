@@ -1,6 +1,7 @@
 package router
 
 import (
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/zakisk/socio-server/models"
 )
@@ -11,6 +12,10 @@ type Router struct {
 
 func NewRouter(handler models.HandlerInterface) *Router {
 	engine := gin.New()
+	config := cors.DefaultConfig()
+	config.AllowOrigins = []string{"*"}
+	corsMiddleware := cors.New(config)
+	engine.Use(gin.Logger(), corsMiddleware)
 
 	engine.POST("/auth/register", handler.RegisterUser)
 	engine.POST("/auth/login", handler.LoginUser)
@@ -32,6 +37,8 @@ func NewRouter(handler models.HandlerInterface) *Router {
 		postsGroup.GET("/:userId/post", handler.GetUserPosts)
 		postsGroup.PATCH("/:id/like", handler.LikePost)
 	}
+
+	engine.GET("/assets/:imageName", handler.GetImage)
 
 	return &Router{S: engine}
 }

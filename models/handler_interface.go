@@ -16,4 +16,6 @@ type HandlerInterface interface {
 	GetFeedPosts(c *gin.Context)
 	GetUserPosts(c *gin.Context)
 	LikePost(c *gin.Context)
+
+	GetImage(c *gin.Context)
 }

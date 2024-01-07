@@ -1,6 +1,8 @@
 package data
 
 import (
+	"fmt"
+
 	"github.com/zakisk/socio-server/models"
 	"gorm.io/gorm"
 )
@@ -18,6 +20,11 @@ func (d *DBHandler) InsertUser(user *models.User) error {
 	return d.db.Create(user).Error
 }
 
-func (d *DBHandler) GetUser() {
-
+func (d *DBHandler) GetUserByCondition(key, value string) (*models.User, error) {
+	var user models.User
+	err := d.db.Where(fmt.Sprintf("%s = ?", key), &value).First(&user).Error
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
 }

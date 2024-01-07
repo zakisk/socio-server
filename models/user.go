@@ -13,7 +13,7 @@ type User struct {
 	LastName string `json:"lastName" form:"lastName" binding:"required"`
 
 	// email of user
-	Email string `json:"email" form:"email" binding:"required,email,unique"`
+	Email string `json:"email" form:"email" binding:"required,email" gorm:"unique"`
 
 	// profile password
 	Password string `json:"password" form:"password"`
