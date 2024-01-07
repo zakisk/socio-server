@@ -20,7 +20,8 @@ func NewRouter(handler models.HandlerInterface) *Router {
 	engine.POST("/auth/register", handler.RegisterUser)
 	engine.POST("/auth/login", handler.LoginUser)
 
-	usersGroup := engine.Group("/users", handler.AuthVerification)
+	usersGroup := engine.Group("/users")
+	usersGroup.Use(handler.AuthVerification)
 	{
 		// Get
 		usersGroup.GET("/:userId", handler.GetUser)

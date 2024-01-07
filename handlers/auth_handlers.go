@@ -31,7 +31,7 @@ func (h *Handler) RegisterUser(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, &user)
+	c.JSON(http.StatusCreated, &user)
 }
 
 func (h *Handler) LoginUser(c *gin.Context) {
@@ -43,7 +43,6 @@ func (h *Handler) LoginUser(c *gin.Context) {
 
 	user, err := h.dbHandler.GetUserByCondition(helpers.Email, body.Email)
 	if err != nil {
-		h.log.Info().Msg("Get user error")
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	}
@@ -56,7 +55,6 @@ func (h *Handler) LoginUser(c *gin.Context) {
 
 	token, err := createToken(user.Email)
 	if err != nil {
-		h.log.Info().Msg("create token error")
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	}

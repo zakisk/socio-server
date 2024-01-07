@@ -12,12 +12,12 @@ import (
 func (h *Handler) AuthVerification(c *gin.Context) {
 	token := c.GetHeader("Authorization")
 	if !strings.Contains(token, "Bearer ") {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "token is not a valid token, doesn't contain Bearer keyword"})
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "token is not a valid token, doesn't contain Bearer keyword"})
 		return
 	}
 
 	if ok := verifyToken(token); !ok {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid token"})
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "invalid token"})
 		return
 	}
 
