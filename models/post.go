@@ -3,11 +3,11 @@ package models
 import "time"
 
 type Post struct {
-	// ID of Post
-	ID uint `json:"_id" gorm:"primaryKey;autoIncrement"`
+	// PostID of Post
+	PostID string `json:"_id"`
 
 	// ID of author user
-	UserId string `json:"userId" form:"userId" binding:"required"`
+	UserID string `json:"userId" form:"userId" binding:"required"`
 
 	// first name of user
 	FirstName string `json:"firstName" form:"firstName" binding:"required"`

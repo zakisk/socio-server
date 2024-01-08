@@ -25,6 +25,7 @@ func (h *Handler) RegisterUser(c *gin.Context) {
 		return
 	}
 	user.Password = hashedPassword
+	user.UserID = helpers.GenerateUUID()
 
 	if err := h.dbHandler.InsertUser(&user); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

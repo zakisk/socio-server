@@ -32,3 +32,13 @@ func (d *DBHandler) GetUserByCondition(key, value string) (*models.User, error) 
 func (d *DBHandler) UpdateUser(user *models.User) error {
 	return d.db.Save(user).Error
 }
+
+func (d *DBHandler) CreatePost(post *models.Post) error {
+	return d.db.Create(post).Error
+}
+
+func (d *DBHandler) GetPosts() ([]models.Post, error) {
+	posts := []models.Post{}
+	err := d.db.Find(&posts).Error
+	return posts, err
+}

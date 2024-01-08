@@ -2,6 +2,6 @@ package helpers
 
 // Field Constants
 const (
-	Email string = "email"
-	ID    string = "id"
+	Email  string = "email"
+	UserID string = "userId"
 )

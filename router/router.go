@@ -33,7 +33,7 @@ func NewRouter(handler models.HandlerInterface) *Router {
 
 	postsGroup := engine.Group("/posts", handler.AuthVerification)
 	{
-		postsGroup.POST("/", handler.AuthVerification)
+		postsGroup.POST("/", handler.CreatePost)
 		postsGroup.GET("/", handler.GetFeedPosts)
 		postsGroup.GET("/:userId/post", handler.GetUserPosts)
 		postsGroup.PATCH("/:id/like", handler.LikePost)

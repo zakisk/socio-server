@@ -16,7 +16,7 @@ func (h *Handler) GetUser(c *gin.Context) {
 		return
 	}
 
-	user, err := h.dbHandler.GetUserByCondition(helpers.ID, userId)
+	user, err := h.dbHandler.GetUserByCondition(helpers.UserID, userId)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
@@ -33,14 +33,14 @@ func (h *Handler) GetUserFriends(c *gin.Context) {
 	}
 
 	friends := []models.User{}
-	user, err := h.dbHandler.GetUserByCondition(helpers.ID, userId)
+	user, err := h.dbHandler.GetUserByCondition(helpers.UserID, userId)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	}
 
 	for _, friendId := range user.Friends {
-		friend, _ := h.dbHandler.GetUserByCondition(helpers.ID, friendId)
+		friend, _ := h.dbHandler.GetUserByCondition(helpers.UserID, friendId)
 		friends = append(friends, *friend)
 	}
 
@@ -60,13 +60,13 @@ func (h *Handler) AddRemoveFriend(c *gin.Context) {
 		return
 	}
 
-	user, err := h.dbHandler.GetUserByCondition(helpers.ID, id)
+	user, err := h.dbHandler.GetUserByCondition(helpers.UserID, id)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": fmt.Sprintf("error while retrieving user: %s", err.Error())})
 		return
 	}
 
-	friend, err := h.dbHandler.GetUserByCondition(helpers.ID, id)
+	friend, err := h.dbHandler.GetUserByCondition(helpers.UserID, id)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": fmt.Sprintf("error while retrieving friend: %s", err.Error())})
 		return
@@ -112,7 +112,7 @@ func (h *Handler) AddRemoveFriend(c *gin.Context) {
 
 	friends := []models.User{}
 	for _, friendId := range user.Friends {
-		friend, _ := h.dbHandler.GetUserByCondition(helpers.ID, friendId)
+		friend, _ := h.dbHandler.GetUserByCondition(helpers.UserID, friendId)
 		friends = append(friends, *friend)
 	}
 
