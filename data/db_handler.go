@@ -37,8 +37,37 @@ func (d *DBHandler) CreatePost(post *models.Post) error {
 	return d.db.Create(post).Error
 }
 
-func (d *DBHandler) GetPosts() ([]models.Post, error) {
-	posts := []models.Post{}
-	err := d.db.Find(&posts).Error
+func (d *DBHandler) GetPosts() ([]*models.Post, error) {
+	posts := []*models.Post{}
+	err := d.db.Find(posts).Error
+	if err != nil {
+		return nil, err
+	}
 	return posts, err
+}
+
+func (d *DBHandler) GetPostsByCondition(key, value string) ([]*models.Post, error) {
+	posts := []*models.Post{}
+	err := d.db.Where(fmt.Sprintf("%s = ?", key), value).Find(posts).Error
+	if err != nil {
+		return nil, err
+	}
+	return posts, nil
+}
+
+func (d *DBHandler) LikePost(postId, userId string) (*models.Post, error) {
+	post := &models.Post{}
+	err := d.db.Where("postId = ?", postId).First(post).Error
+	if err != nil {
+		return nil, err
+	}
+
+	if ok := post.Likes[userId]; ok {
+		delete(post.Likes, userId)
+	} else {
+		post.Likes[userId] = true
+	}
+
+	err = d.db.Save(post).Error
+	return post, nil
 }

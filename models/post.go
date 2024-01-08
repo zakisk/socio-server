@@ -3,8 +3,8 @@ package models
 import "time"
 
 type Post struct {
-	// PostID of Post
-	PostID string `json:"_id"`
+	// ID of the Post
+	PostID string `json:"_id" gorm:"column:postId"`
 
 	// ID of author user
 	UserID string `json:"userId" form:"userId" binding:"required"`
@@ -38,8 +38,4 @@ type Post struct {
 
 	// the time post is updated
 	UpdatedAt time.Time `json:"updatedAt" form:"updatedAt"`
-}
-
-func (p *Post) Validate() {
-	
 }
