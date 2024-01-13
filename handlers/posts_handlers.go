@@ -1,23 +1,27 @@
 package handlers
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/zakisk/socio-server/helpers"
 	"github.com/zakisk/socio-server/models"
+	"gorm.io/datatypes"
 )
 
 func (h *Handler) CreatePost(c *gin.Context) {
 	var body postBody
 	if err := c.BindJSON(&body); err != nil {
+		h.log.Info().Msg("Error while reading body")
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	user, err := h.dbHandler.GetUserByCondition(helpers.UserID, body.UserId)
 	if err != nil {
+		h.log.Info().Msg("Error while retrieving user")
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	}
@@ -31,18 +35,20 @@ func (h *Handler) CreatePost(c *gin.Context) {
 		Description:     body.Description,
 		PicturePath:     body.PicturePath,
 		UserPicturePath: user.PicturePath,
-		Likes:           map[string]bool{},
+		Likes:           datatypes.JSON(""),
 		Comments:        []string{},
 	}
 
 	err = h.dbHandler.CreatePost(post)
 	if err != nil {
+		h.log.Info().Msg("Error creating post")
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
 	posts, err := h.dbHandler.GetPosts()
 	if err != nil {
+		h.log.Info().Msg("Error while retrieving posts")
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -89,7 +95,35 @@ func (h *Handler) LikePost(c *gin.Context) {
 		return
 	}
 
-	post, err := h.dbHandler.LikePost(id, body.UserId)
+	post, err := h.dbHandler.GetPostByCondition(helpers.PostID, id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	m := map[string]bool{}
+	if len(post.Likes) > 0 {
+		err = json.Unmarshal(post.Likes, &m)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+	}
+
+	if ok := m[body.UserId]; ok {
+		delete(m, body.UserId)
+	} else {
+		m[body.UserId] = true
+	}
+
+	data, err := json.Marshal(&m)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	post.Likes = data
+	err = h.dbHandler.UpdatePost(*post)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

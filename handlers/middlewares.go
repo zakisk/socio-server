@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 	"os"
 	"strings"
@@ -12,28 +13,31 @@ import (
 func (h *Handler) AuthVerification(c *gin.Context) {
 	token := c.GetHeader("Authorization")
 	if !strings.Contains(token, "Bearer ") {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "token is not a valid token, doesn't contain Bearer keyword"})
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "token is not a valid token, doesn't contain `Bearer` keyword"})
 		return
 	}
 
-	if ok := verifyToken(token); !ok {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "invalid token"})
+	if err := verifyToken(token[7:]); err != nil {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
 
 	c.Next()
 }
 
-func verifyToken(tokenString string) bool {
-	secretKey := []byte(os.Getenv("KWT_SECRET"))
-
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+func verifyToken(tokenString string) error {
+	secretKey := []byte(os.Getenv("JWT_SECRET"))
+	if len(secretKey) == 0{
+		return fmt.Errorf("JWT_SECRET is empty")
+	}
+	
+	_, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		return secretKey, nil
 	})
 
 	if err != nil {
-		return false
+		return err
 	}
 
-	return token.Valid
+	return nil
 }

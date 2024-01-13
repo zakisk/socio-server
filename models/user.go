@@ -1,6 +1,10 @@
 package models
 
-import "time"
+import (
+	"time"
+
+	"gorm.io/datatypes"
+)
 
 type User struct {
 	// UserID of Post
@@ -22,7 +26,7 @@ type User struct {
 	PicturePath string `json:"picturePath" form:"picturePath"`
 
 	// friends of user
-	Friends []string `json:"friends" gorm:"type:varchar(255)[]"`
+	Friends datatypes.JSON `json:"friends" gorm:"type:jsonb"`
 
 	// location of user
 	Location string `json:"location" form:"location"`

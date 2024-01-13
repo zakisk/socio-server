@@ -30,44 +30,44 @@ func (d *DBHandler) GetUserByCondition(key, value string) (*models.User, error) 
 }
 
 func (d *DBHandler) UpdateUser(user *models.User) error {
-	return d.db.Save(user).Error
+	return d.db.Model(&models.User{}).
+		Where("user_id = ?", user.UserID).
+		Save(user).Error
 }
 
 func (d *DBHandler) CreatePost(post *models.Post) error {
 	return d.db.Create(post).Error
 }
 
-func (d *DBHandler) GetPosts() ([]*models.Post, error) {
-	posts := []*models.Post{}
-	err := d.db.Find(posts).Error
+func (d *DBHandler) GetPosts() ([]models.Post, error) {
+	posts := []models.Post{}
+	err := d.db.Find(&posts).Error
 	if err != nil {
 		return nil, err
 	}
 	return posts, err
 }
 
-func (d *DBHandler) GetPostsByCondition(key, value string) ([]*models.Post, error) {
-	posts := []*models.Post{}
-	err := d.db.Where(fmt.Sprintf("%s = ?", key), value).Find(posts).Error
+func (d *DBHandler) GetPostsByCondition(key, value string) ([]models.Post, error) {
+	posts := []models.Post{}
+	err := d.db.Where(fmt.Sprintf("%s = ?", key), value).Find(&posts).Error
 	if err != nil {
 		return nil, err
 	}
 	return posts, nil
 }
 
-func (d *DBHandler) LikePost(postId, userId string) (*models.Post, error) {
-	post := &models.Post{}
-	err := d.db.Where("postId = ?", postId).First(post).Error
+func (d *DBHandler) GetPostByCondition(key, value string) (*models.Post, error) {
+	var post models.Post
+	err := d.db.Where(fmt.Sprintf("%s = ?", key), &value).First(&post).Error
 	if err != nil {
 		return nil, err
 	}
+	return &post, nil
+}
 
-	if ok := post.Likes[userId]; ok {
-		delete(post.Likes, userId)
-	} else {
-		post.Likes[userId] = true
-	}
-
-	err = d.db.Save(post).Error
-	return post, nil
+func (d *DBHandler) UpdatePost(post models.Post) error {
+	return d.db.Model(&models.Post{}).
+		Where("post_id = ?", post.PostID).
+		Save(post).Error
 }

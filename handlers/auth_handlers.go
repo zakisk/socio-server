@@ -77,5 +77,10 @@ func createToken(email string) (string, error) {
 		"exp":   time.Now().Add(time.Hour * 24).Unix(), // Token expiration time (24 hours in this case)
 	})
 
+	secretKey := []byte(os.Getenv("JWT_SECRET"))
+	if len(secretKey) == 0 {
+		return "", fmt.Errorf("JWT_SECRET is empty")
+	}
+	
 	return claims.SignedString([]byte(os.Getenv("JWT_SECRET")))
 }

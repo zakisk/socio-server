@@ -1,10 +1,13 @@
 package models
 
-import "time"
+import (
+	"time"
+	"gorm.io/datatypes"
+)
 
 type Post struct {
 	// ID of the Post
-	PostID string `json:"_id" gorm:"column:postId"`
+	PostID string `json:"_id"`
 
 	// ID of author user
 	UserID string `json:"userId" form:"userId" binding:"required"`
@@ -28,10 +31,10 @@ type Post struct {
 	UserPicturePath string `json:"userPicturePath" form:"userPicturePath"`
 
 	// likes on post
-	Likes map[string]bool `json:"likes" form:"likes" gorm:"type:json"`
+	Likes datatypes.JSON `json:"likes" form:"likes" gorm:"type:jsonb"`
 
 	// comments on post
-	Comments []string `json:"comments" form:"comments" gorm:"type:varchar(255)[]"`
+	Comments []string `json:"comments" form:"comments" gorm:"type:jsonb"`
 
 	// the time post is created
 	CreatedAt time.Time `json:"createdAt" form:"createdAt"`

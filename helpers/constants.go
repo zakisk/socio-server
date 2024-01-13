@@ -3,5 +3,6 @@ package helpers
 // Field Constants
 const (
 	Email  string = "email"
-	UserID string = "userId"
+	UserID string = "user_id"
+	PostID string = "post_id"
 )

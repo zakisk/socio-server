@@ -13,7 +13,10 @@ type Router struct {
 func NewRouter(handler models.HandlerInterface) *Router {
 	engine := gin.New()
 	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{"*"}
+	config.AllowOrigins = []string{"http://localhost:3000"}
+	config.AllowHeaders = append(config.AllowHeaders, "Authorization")
+	config.ExposeHeaders = []string{"Content-Length"}
+	config.AllowCredentials = true
 	corsMiddleware := cors.New(config)
 	engine.Use(gin.Logger(), corsMiddleware)
 
@@ -31,10 +34,11 @@ func NewRouter(handler models.HandlerInterface) *Router {
 		usersGroup.PATCH("/:id/:friendId", handler.AddRemoveFriend)
 	}
 
-	postsGroup := engine.Group("/posts", handler.AuthVerification)
+	postsGroup := engine.Group("/posts")
+	postsGroup.Use(handler.AuthVerification)
 	{
-		postsGroup.POST("/", handler.CreatePost)
-		postsGroup.GET("/", handler.GetFeedPosts)
+		postsGroup.POST("", handler.CreatePost)
+		postsGroup.GET("", handler.GetFeedPosts)
 		postsGroup.GET("/:userId/posts", handler.GetUserPosts)
 		postsGroup.PATCH("/:id/like", handler.LikePost)
 	}
